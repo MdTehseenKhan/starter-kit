@@ -1,36 +1,107 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Starter
+
+## About
+
+Description
 
 ## Getting Started
 
-First, run the development server:
+This is a quick guide to get you started with the project.
+
+### Requirements
+
+Ensure you have the following installed:
+
+- Node.js
+- Git
+- Docker
+
+### Cloning the Repository
+
+Clone this repository:
+
+```
+git clone https://github.com/[ORG]/starter.git --depth=1
+```
+
+Move to the folder just cloned:
+
+```
+cd starter
+```
+
+### Installing the Node Modules
+
+Install the Node modules with the following command:
+
+```
+npm i
+```
+
+### Supabase
+
+First, run the Supabase stack:
+
+```bash
+npm run supastart
+```
+
+This does not run our remote Supabase project, but a local instance
+using Docker. This is useful for development and testing.
+
+The general practice is to use the local instance for development and the
+production instance when we're ready to deploy. Please set up the local
+instance first before attempting to use the production instance.
+
+#### Adding the Supabase Keys to the Environment Variables
+
+If this is the first time you run this command, we will need to get the
+Supabase keys and add them to our local environment variables configuration file `.env.local`.
+
+When running the command, we will see a message like this:
+
+```bash
+> supabase start
+
+Applying migration 00000000000000_schema.sql...
+Seeding data supabase/seed.sql...
+Started supabase local development setup.
+
+         API URL: http://localhost:54321
+          DB URL: postgresql://postgres:postgres@localhost:54322/postgres
+      Studio URL: http://localhost:54323
+    Inbucket URL: http://localhost:54324
+      JWT secret: super-secret-jwt-token-with-at-least-32-characters-long
+        anon key: ****************************************************
+service_role key: ****************************************************
+```
+
+Now, we need to copy the `anon key` and `service_role key` values and add
+them to the `.env.local` file:
+
+```
+NEXT_PUBLIC_SUPABASE_ANON_KEY=****************************************************
+SUPABASE_SERVICE_ROLE_KEY=****************************************************
+```
+
+#### Database Types
+
+Now, generate the DB types with:
+
+```
+npm run types
+```
+
+### Next.js Server
+
+Then, run the Next.js development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+<!-- ### Email Confirmations
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+When signing up, Supabase sends an email confirmation to a testing account. You can access the InBucket testing emails [using the following link](http://localhost:54324/monitor), and can follow the links to complete the sign up process.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result. -->
