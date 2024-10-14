@@ -1,18 +1,17 @@
 import { cache } from 'react';
 import { cookies } from 'next/headers';
-import { CookieOptions, createServerClient } from '@supabase/ssr';
+import { CookieMethodsServer, createServerClient } from '@supabase/ssr';
 
-import { getSupabaseClientKeys } from '@/lib/supabase/config/get-supabase-client-keys';
 import { Database } from '@/lib/supabase/types';
 import { env } from '@/utils/env';
 
-const getSupabaseRouteHandlerClient = cache(
+export const getSupabaseRouteHandlerClient = cache(
   (
     params = {
       admin: false,
     }
   ) => {
-    const { url, anonKey } = getSupabaseClientKeys();
+    const url = env.NEXT_PUBLIC_SUPABASE_URL;
 
     if (params.admin) {
       const serviceRoleKey = env.SUPABASE_SERVICE_ROLE_KEY;
@@ -25,10 +24,15 @@ const getSupabaseRouteHandlerClient = cache(
         auth: {
           persistSession: false,
         },
-        // @ts-ignore
-        cookies: {},
+        cookies: {
+          getAll() {
+            return cookies().getAll();
+          },
+        },
       });
     }
+
+    const anonKey = env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
     return createServerClient<Database>(url, anonKey, {
       cookies: getCookiesStrategy(),
@@ -42,14 +46,13 @@ function getCookiesStrategy() {
   const cookieStore = cookies();
 
   return {
-    set: (name: string, value: string, options: CookieOptions) => {
-      cookieStore.set({ name, value, ...options });
+    getAll() {
+      return cookieStore.getAll();
     },
-    get: (name: string) => {
-      return cookieStore.get(name)?.value;
+    setAll(cookiesToSet) {
+      try {
+        cookiesToSet.forEach(({ name, value, options }) => cookieStore.set(name, value, options));
+      } catch {}
     },
-    remove: (name: string, options: CookieOptions) => {
-      cookieStore.set({ name, value: '', ...options });
-    },
-  };
+  } as CookieMethodsServer;
 }

@@ -1,8 +1,5 @@
-import { loadEnvConfig } from '@next/env';
 import { createEnv } from '@t3-oss/env-nextjs';
 import { z } from 'zod';
-
-loadEnvConfig(process.cwd(), true);
 
 export const env = createEnv({
   // Server Environment Variables Schema
@@ -12,7 +9,7 @@ export const env = createEnv({
   },
   // Client Environment Variables Schema
   client: {
-    NEXT_PUBLIC_ENVIRONMENT: z.string().url().min(1),
+    NEXT_PUBLIC_ENVIRONMENT: z.enum(['local', 'development', 'test', 'production']),
     NEXT_PUBLIC_SITE_URL: z.string().url().min(1),
     NEXT_PUBLIC_SUPABASE_URL: z.string().url().min(1),
     NEXT_PUBLIC_SUPABASE_ANON_KEY: z.string().min(1),

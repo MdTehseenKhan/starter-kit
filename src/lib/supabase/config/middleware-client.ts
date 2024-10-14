@@ -1,58 +1,34 @@
-import type { CookieOptions } from '@supabase/ssr';
+import type { CookieMethodsServer } from '@supabase/ssr';
 import type { NextRequest } from 'next/server';
 
 import { NextResponse } from 'next/server';
 import { createServerClient } from '@supabase/ssr';
 
-import { getSupabaseClientKeys } from '@/lib/supabase/config/get-supabase-client-keys';
 import { Database } from '@/lib/supabase/types';
+import { env } from '@/utils/env';
 
-export default function createMiddlewareClient(request: NextRequest, response: NextResponse) {
-  const keys = getSupabaseClientKeys();
+export function createMiddlewareClient(request: NextRequest, response: NextResponse) {
+  const url = env.NEXT_PUBLIC_SUPABASE_URL;
+  const anonKey = env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
-  return createServerClient<Database>(keys.url, keys.anonKey, {
+  return createServerClient<Database>(url, anonKey, {
     cookies: getCookieStrategy(request, response),
   });
 }
 
 function getCookieStrategy(request: NextRequest, response: NextResponse) {
   return {
-    set: (name: string, value: string, options: CookieOptions) => {
-      request.cookies.set({ name, value, ...options });
-
+    getAll() {
+      return request.cookies.getAll();
+    },
+    setAll(cookiesToSet) {
+      cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value));
       response = NextResponse.next({
-        request: {
-          headers: request.headers,
-        },
+        request,
       });
-
-      response.cookies.set({
-        name,
-        value,
-        ...options,
-      });
+      cookiesToSet.forEach(({ name, value, options }) =>
+        response.cookies.set(name, value, options)
+      );
     },
-    get: (name: string) => {
-      return request.cookies.get(name)?.value;
-    },
-    remove: (name: string, options: CookieOptions) => {
-      request.cookies.set({
-        name,
-        value: '',
-        ...options,
-      });
-
-      response = NextResponse.next({
-        request: {
-          headers: request.headers,
-        },
-      });
-
-      response.cookies.set({
-        name,
-        value: '',
-        ...options,
-      });
-    },
-  };
+  } as CookieMethodsServer;
 }
