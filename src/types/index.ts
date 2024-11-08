@@ -1,7 +1,5 @@
-type WithId<T> = T & { id: string };
+export type Nullable<T> = T | null;
+export type Optional<T> = T | undefined;
+export type Maybe<T> = T | null | undefined;
 
-type Nullable<T> = T | null;
-type Optional<T> = T | undefined;
-type Maybe<T> = T | null | undefined;
-
-type HttpMethod = `GET` | `POST` | `PUT` | 'PATCH' | 'DELETE' | 'HEAD';
+export type HttpMethod = `GET` | `POST` | `PUT` | 'PATCH' | 'DELETE' | 'HEAD';

@@ -1,14 +1,20 @@
-import { NextRequest, NextResponse, URLPattern } from 'next/server';
-import { createCsrfProtect, CsrfError, NextConfigOptions } from '@edge-csrf/nextjs';
+import {
+  CsrfError,
+  type NextConfigOptions,
+  createCsrfProtect,
+} from '@edge-csrf/nextjs';
+import { type NextRequest, NextResponse, URLPattern } from 'next/server';
 
 import { SiteConfig } from '@/configuration';
-import createMiddlewareClient from './lib/supabase/config/middleware-client';
+import { getSupabaseMiddlewareClient } from '@/lib/supabase/config/middleware';
 
 const CSRF_SECRET_COOKIE = 'csrfSecret';
 const NEXT_ACTION_HEADER = 'next-action';
 
 export const config = {
-  matcher: ['/((?!_next/static|_next/image|favicon.ico|locales|assets|api/stripe/webhook).*)'],
+  matcher: [
+    '/((?!_next/static|_next/image|favicon.ico|locales|assets|api/stripe/webhook).*)',
+  ],
 };
 
 export async function middleware(request: NextRequest) {
@@ -50,7 +56,9 @@ function setRequestHeaders(request: NextRequest) {
   return headers;
 }
 
-const getNextConfigOptions = (request: NextRequest): Partial<NextConfigOptions> => {
+const getNextConfigOptions = (
+  request: NextRequest
+): Partial<NextConfigOptions> => {
   return {
     cookie: {
       secure: SiteConfig.isProduction,
@@ -64,7 +72,10 @@ const getNextConfigOptions = (request: NextRequest): Partial<NextConfigOptions> 
   };
 };
 
-async function withCsrfMiddleware(request: NextRequest, response = new NextResponse()) {
+async function withCsrfMiddleware(
+  request: NextRequest,
+  response = new NextResponse()
+) {
   const options = getNextConfigOptions(request);
   const csrfProtect = createCsrfProtect(options);
 
@@ -87,7 +98,7 @@ const getUrlPatterns = () => {
     {
       pattern: new URLPattern({ pathname: '/app*' }),
       handler: async (request: NextRequest, response: NextResponse) => {
-        const supabase = createMiddlewareClient(request, response);
+        const supabase = getSupabaseMiddlewareClient(request, response);
         const { data } = await supabase.auth.getUser();
 
         const user = data.user;
@@ -104,7 +115,7 @@ const getUrlPatterns = () => {
     {
       pattern: new URLPattern({ pathname: '/onboarding*' }),
       handler: async (request: NextRequest, response: NextResponse) => {
-        const supabase = createMiddlewareClient(request, response);
+        const supabase = getSupabaseMiddlewareClient(request, response);
         const { data } = await supabase.auth.getUser();
 
         const user = data.user;

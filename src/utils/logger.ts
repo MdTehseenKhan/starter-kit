@@ -1,23 +1,13 @@
-import type { Logger } from 'pino';
+import pino, { type Logger } from 'pino';
 
-let logger: Logger;
+const logger = pino({
+  browser: {
+    asObject: true,
+  },
+  level: 'debug',
+  base: {
+    env: process.env.NODE_ENV,
+  },
+});
 
-export const getLogger = () => {
-  if (logger) {
-    return logger;
-  }
-
-  const pino = require('pino');
-
-  logger = pino({
-    browser: {
-      asObject: true,
-    },
-    level: 'debug',
-    base: {
-      env: process.env.NODE_ENV,
-    },
-  });
-
-  return logger;
-};
+export { logger, type Logger };

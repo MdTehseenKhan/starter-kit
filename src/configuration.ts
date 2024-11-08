@@ -25,7 +25,7 @@ export const SiteConfig = {
       resetPasswordRequest: '/auth/reset-password-request',
       callback: '/auth/callback',
     },
-    onboarding: `/onboarding`,
+    onboarding: '/onboarding',
     marketing: {
       about: { title: 'About', href: '/about' },
     },

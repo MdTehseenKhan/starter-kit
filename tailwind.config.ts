@@ -1,8 +1,9 @@
 import type { Config } from 'tailwindcss';
 
 import plugin from 'tailwindcss/plugin';
+import animate from 'tailwindcss-animate';
 
-const config: Config = {
+const tailwindConfig: Config = {
   darkMode: ['class'],
   content: [
     './src/pages/**/*.{js,ts,jsx,tsx,mdx}',
@@ -68,7 +69,7 @@ const config: Config = {
     },
   },
   plugins: [
-    require('tailwindcss-animate'),
+    animate,
     plugin(({ addUtilities }) => {
       addUtilities({
         '.utility-class-demo': {
@@ -78,4 +79,4 @@ const config: Config = {
     }),
   ],
 };
-export default config;
+export default tailwindConfig;

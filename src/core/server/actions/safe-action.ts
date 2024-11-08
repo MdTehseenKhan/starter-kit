@@ -1,11 +1,11 @@
 import { createSafeActionClient } from 'next-safe-action';
 
-import getSupabaseServerActionClient from '@/lib/supabase/config/action-client';
-import { getLogger } from '@/utils/logger';
+import { getSupabaseServerClient } from '@/lib/supabase/config/server';
+import { logger } from '@/utils/logger';
 
 export const safeActionClient = createSafeActionClient({
   handleServerError: (error) => {
-    getLogger().error({ error }, 'SERVER ERROR:');
+    logger.error({ error }, 'SERVER ERROR:');
     if (error instanceof Error) {
       return { serverError: error.message };
     }
@@ -14,7 +14,7 @@ export const safeActionClient = createSafeActionClient({
 });
 
 export const authActionClient = safeActionClient.use(async ({ next }) => {
-  const supabase = getSupabaseServerActionClient();
+  const supabase = await getSupabaseServerClient();
   const { data, error } = await supabase.auth.getUser();
   const authUser = data?.user;
 

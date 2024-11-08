@@ -1,20 +1,20 @@
 'use server';
 
-import { NextRequest, NextResponse } from 'next/server';
+import { type NextRequest, NextResponse } from 'next/server';
 
-import { getLogger } from '@/utils/logger';
+import { throwInternalServerErrorException } from '@/utils/http-exceptions';
+import { logger } from '@/utils/logger';
 
 export const GET = async (req: NextRequest, res: NextResponse) => {
-  const logger = getLogger();
   try {
-    logger.info(`Test API Route`);
+    logger.info('Test API Route');
 
     return NextResponse.json({
       success: true,
       message: 'Test API Route',
     });
   } catch (error) {
-    logger.error({ error }, `Error getting username availability`);
-    // throwInternalServerErrorException();
+    logger.error({ error }, 'Error getting username availability');
+    throwInternalServerErrorException();
   }
 };

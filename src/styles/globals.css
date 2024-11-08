@@ -72,10 +72,13 @@ body {
   * {
     @apply border-border;
   }
+
   body {
     @apply bg-background text-foreground;
   }
+
   /* Hide Spin buttons from input type=number */
+
   /* For Chrome, Safari, Edge, Opera */
   input::-webkit-outer-spin-button,
   input::-webkit-inner-spin-button {
@@ -83,7 +86,7 @@ body {
     margin: 0;
   }
   /* For Firefox */
-  input[type='number'] {
+  input[type="number"] {
     appearance: textfield;
     -moz-appearance: textfield;
   }
